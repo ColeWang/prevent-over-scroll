@@ -1,20 +1,20 @@
-interface ICSSStyleDeclaration extends CSSStyleDeclaration {
+interface CSSStyleDeclaration {
   WebkitOverflowScrolling: string;
 }
 
-interface IWindow extends Window {
+interface Window {
   preventOverScroll: PreventOverScroll;
 }
 
 interface PreventOverScroll {
-  enable (): void;
+  enable? (): void;
 
-  disable (): void;
+  disable? (): void;
 
-  isEnabled (): boolean;
+  isEnabled? (): boolean;
 }
 
-(function (win: Window) {
+(function (win: Window, lib: PreventOverScroll) {
   let startY: number = 0
   let enabled: boolean = false
   let passiveOption: boolean = false
@@ -45,6 +45,7 @@ interface PreventOverScroll {
     }
 
     let el: HTMLElement = (evt.target as HTMLElement)
+
     while (el !== document.body && !isDocument(evt)) {
       const style: CSSStyleDeclaration = win.getComputedStyle(el)
 
@@ -74,6 +75,7 @@ interface PreventOverScroll {
 
       el = (el.parentNode as HTMLElement)
     }
+
     evt.preventDefault()
   }
 
@@ -84,12 +86,14 @@ interface PreventOverScroll {
   function enable (): void {
     win.addEventListener('touchstart', handleTouchstart, passiveOption ? { passive: false } : false)
     win.addEventListener('touchmove', handleTouchmove, passiveOption ? { passive: false } : false)
+
     enabled = true
   }
 
   function disable (): void {
     win.removeEventListener('touchstart', handleTouchstart, false)
     win.removeEventListener('touchmove', handleTouchmove, false)
+
     enabled = false
   }
 
@@ -100,9 +104,12 @@ interface PreventOverScroll {
   function createScrollSupport () {
     const testDiv: HTMLElement = document.createElement('div')
     document.documentElement.appendChild(testDiv)
-    ;(testDiv.style as ICSSStyleDeclaration).WebkitOverflowScrolling = 'touch'
+    testDiv.style.WebkitOverflowScrolling = 'touch'
+
     const scrollSupport: boolean = 'getComputedStyle' in win && win.getComputedStyle(testDiv)['-webkit-overflow-scrolling'] === 'touch'
+
     document.documentElement.removeChild(testDiv)
+
     if (scrollSupport) {
       enable()
     }
@@ -110,9 +117,7 @@ interface PreventOverScroll {
 
   createScrollSupport()
 
-  ;(win as IWindow).preventOverScroll = {
-    enable: enable,
-    disable: disable,
-    isEnabled: isEnabled
-  }
-})(window)
+  lib.enable = enable
+  lib.disable = disable
+  lib.isEnabled = isEnabled
+})(window, window.preventOverScroll || (window.preventOverScroll = {}))
