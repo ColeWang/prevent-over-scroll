@@ -14,7 +14,7 @@ interface PreventOverScroll {
   isEnabled (): boolean;
 }
 
-;(function (win: Window) {
+(function (win: Window) {
   let startY: number = 0
   let enabled: boolean = false
   let passiveOption: boolean = false
@@ -71,6 +71,7 @@ interface PreventOverScroll {
         }
         return
       }
+
       el = (el.parentNode as HTMLElement)
     }
     evt.preventDefault()
@@ -96,7 +97,7 @@ interface PreventOverScroll {
     return enabled
   }
 
-  function isScrollSupport () {
+  function createScrollSupport () {
     const testDiv: HTMLElement = document.createElement('div')
     document.documentElement.appendChild(testDiv)
     ;(testDiv.style as ICSSStyleDeclaration).WebkitOverflowScrolling = 'touch'
@@ -107,7 +108,7 @@ interface PreventOverScroll {
     }
   }
 
-  isScrollSupport()
+  createScrollSupport()
 
   ;(win as IWindow).preventOverScroll = {
     enable: enable,
