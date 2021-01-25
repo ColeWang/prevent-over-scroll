@@ -3,18 +3,18 @@ interface CSSStyleDeclaration {
 }
 
 interface Window {
-  preventOverScroll: PreventOverScroll;
+  preventOverScroll?: PreventOverScroll;
 }
 
 interface PreventOverScroll {
-  enable? (): void;
+  enable (): void;
 
-  disable? (): void;
+  disable (): void;
 
-  isEnabled? (): boolean;
+  isEnabled (): boolean;
 }
 
-(function (win: Window, lib: PreventOverScroll) {
+(function (win: Window) {
   let startY: number = 0
   let enabled: boolean = false
   let passiveOption: boolean = false
@@ -117,7 +117,9 @@ interface PreventOverScroll {
 
   createScrollSupport()
 
-  lib.enable = enable
-  lib.disable = disable
-  lib.isEnabled = isEnabled
-})(window, window.preventOverScroll || (window.preventOverScroll = {}))
+  win.preventOverScroll = {
+    enable,
+    disable,
+    isEnabled
+  }
+})(window)
