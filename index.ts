@@ -45,7 +45,7 @@ interface PreventOverScroll {
        * 双指禁用默认事件 - 禁用双指缩放
        */
       // evt.preventDefault()
-      return void 0
+      return
     }
 
     let el: HTMLElement = (evt.target as HTMLElement)
