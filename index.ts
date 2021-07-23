@@ -41,7 +41,11 @@ interface PreventOverScroll {
     const zoom: number = win.innerWidth / win.document.documentElement.clientWidth
 
     if (isTouch(evt) && evt.touches.length > 1 || zoom !== 1) {
-      return
+      /**
+       * 双指禁用默认事件 - 禁用双指缩放
+       */
+      // evt.preventDefault()
+      return void 0
     }
 
     let el: HTMLElement = (evt.target as HTMLElement)
